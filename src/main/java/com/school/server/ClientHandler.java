@@ -78,13 +78,14 @@ public class ClientHandler implements Runnable{
         switch(command){
             case "MSGRES":
                 output.println(command + ":" + username + ":" + message);
+                output.flush();
                 break;
             case "CLIENTLIST":
                 output.println(command + ":" + username);
+                output.flush();
                 break;
         }
-        output.println(username + ":" + message);
-        output.flush();
+        
     }
 
     @Override
