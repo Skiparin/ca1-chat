@@ -9,64 +9,66 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * Created by Mikkel on 06/09/16.
+ * Created by Orvur on 06/09/16.
  */
-public class Server{
+public class Server {
+
     private static final List<ClientHandler> observers = new CopyOnWriteArrayList<>();
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
-    
+
     public static void main(String[] args) {
         new Server().start(args[0], Integer.parseInt(args[1]));
     }
 
-    public void addObserver(ClientHandler handler){
+    public void addObserver(ClientHandler handler) {
         observers.add(handler);
     }
-    
+
     public void removeObserver(ClientHandler handler) {
         observers.remove(handler);
         updateClientList();
     }
 
-    public void notifyObservers(String[] data){
-        for(ClientHandler handler : observers) handler.update(data);
+    public void notifyObservers(String[] data) {
+        for (ClientHandler handler : observers) {
+            handler.update(data);
+        }
     }
-    
+
     public void handelMessage(String[] data, String username) {
         String[] users = data[1].split(",");
         String command = "MSGRES";
         for (ClientHandler client : observers) {
-            if(client.getUsername().equals(username)){
-                client.sendMessage(command, data[2], username);
-            }
-            if(!data[1].isEmpty()){
-            for (String user : users){
-                if(client.getUsername().equals(user)){
+            if (!data[1].isEmpty()) {
+                if (client.getUsername().equals(username)) {
                     client.sendMessage(command, data[2], username);
                 }
-            }
+                for (String user : users) {
+                    if (client.getUsername().equals(user)) {
+                        client.sendMessage(command, data[2], username);
+                    }
+                }
             } else {
                 client.sendMessage(command, data[2], username);
             }
-            
+
         }
     }
 
-    
-    public void start(String ip, int port){
-        try{
+    public void start(String ip, int port) {
+        try {
             ServerSocket server = new ServerSocket();
             server.bind(new InetSocketAddress(ip, port));
-            
-            while(true){
+
+            while (true) {
                 Socket socket = server.accept();
                 ClientHandler handler = ClientHandler.setServer(socket, this);
                 observers.add(handler);
                 threadPool.submit(handler);
-                
+
             }
         } catch (Exception ex) {
-            System.out.println(ex); 
+            System.out.println(ex);
         }
     }
 
@@ -75,12 +77,12 @@ public class Server{
             String command = "CLIENTLIST";
             String clientList = "";
             for (ClientHandler o : observers) {
-                clientList = clientList +  o.getUsername() + ",";
-                
+                clientList = clientList + o.getUsername() + ",";
+
             }
-            clientList = clientList.substring(0, (clientList.length() -1));
+            clientList = clientList.substring(0, (clientList.length() - 1));
             observer.sendMessage(command, "", clientList);
         }
     }
-   
+
 }
