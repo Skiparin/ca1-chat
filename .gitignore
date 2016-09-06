@@ -10,3 +10,4 @@ manifest.mf
 .idea/*
 /.idea
 *.iml
+nbconfiguration.xml
