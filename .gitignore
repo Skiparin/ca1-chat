@@ -7,3 +7,6 @@ manifest.mf
 /dist/
 /*/target/
 /target/
+.idea/*
+/.idea
+*.iml
