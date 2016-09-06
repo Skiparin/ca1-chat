@@ -35,11 +35,6 @@ public class ClientHandler implements Runnable{
     public static ClientHandler setServer(Socket socket, Server server) throws IOException {
         return new ClientHandler(socket, server);
     }
-   
-    
-    public void update(String[] data) {
-        //switch(data)
-    }
     
     public String getUsername() {
         return username;

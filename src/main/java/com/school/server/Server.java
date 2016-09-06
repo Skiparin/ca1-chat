@@ -29,12 +29,6 @@ public class Server {
         updateClientList();
     }
 
-    public void notifyObservers(String[] data) {
-        for (ClientHandler handler : observers) {
-            handler.update(data);
-        }
-    }
-
     public void handelMessage(String[] data, String username) {
         String[] users = data[1].split(",");
         String command = "MSGRES";
