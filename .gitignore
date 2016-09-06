@@ -2,4 +2,8 @@
 /nbproject/*
 /nbproject
 build.xml
-
+build
+manifest.mf
+/dist/
+/*/target/
+/target/
