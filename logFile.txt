@@ -1,0 +1,4 @@
+sep. 07, 2016 10:06:08 AM com.school.server.Server main
+INFO: Starting the Server
+sep. 07, 2016 10:06:08 AM com.school.server.Server main
+INFO: Starting the Server

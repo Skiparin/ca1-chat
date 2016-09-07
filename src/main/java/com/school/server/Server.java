@@ -7,6 +7,8 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Orvur on 06/09/16.
@@ -17,7 +19,15 @@ public class Server {
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
 
     public static void main(String[] args) {
-        new Server().start(args[0], Integer.parseInt(args[1]));
+        try {
+            Log.setLogFile("logFile.txt", "ServerLog");
+            //Start the server here
+            Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Starting the Server");
+            new Server().start(args[0], Integer.parseInt(args[1]));
+        } finally {
+            Log.closeLogger();
+        }
+
     }
 
     public void addObserver(ClientHandler handler) {
@@ -29,7 +39,7 @@ public class Server {
         updateClientList();
     }
 
-    public void handelMessage(String[] data, String username) {
+    public void handelMessage(String[] data, String username) throws InterruptedException {
         String[] users = data[1].split(",");
         String command = "MSGRES";
         for (ClientHandler client : observers) {

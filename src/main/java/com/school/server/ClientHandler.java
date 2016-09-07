@@ -40,7 +40,7 @@ public class ClientHandler implements Runnable{
         return username;
     }
     
-    private void checkHeader(String[] data) {
+    private void checkHeader(String[] data) throws InterruptedException {
         switch(data[0]) {
             case "LOGIN":
                 if (username.equals("")){
@@ -91,6 +91,8 @@ public class ClientHandler implements Runnable{
                 String[] headers = message.split(":");
                 checkHeader(headers);
             } catch (IOException ex) {
+                Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InterruptedException ex) {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             
