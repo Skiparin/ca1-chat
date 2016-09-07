@@ -1,4 +1,12 @@
-sep. 07, 2016 10:06:08 AM com.school.server.Server main
+Sep 07, 2016 10:54:01 AM com.school.server.Server main
 INFO: Starting the Server
-sep. 07, 2016 10:06:08 AM com.school.server.Server main
-INFO: Starting the Server
+Sep 07, 2016 10:54:28 AM com.school.server.Server updateClientList
+INFO: Clientlist updated: ,Kasper,Kasper
+Sep 07, 2016 10:54:40 AM com.school.server.Server updateClientList
+INFO: Clientlist updated: ORruvur,KasperORruvur,Kasper
+Sep 07, 2016 10:55:01 AM com.school.server.Server handelMessage
+INFO: MSGHey
+Sep 07, 2016 10:55:10 AM com.school.server.Server handelMessage
+INFO: MSGHello
+Sep 07, 2016 10:55:17 AM com.school.server.Server updateClientList
+INFO: Clientlist updated: Kasper

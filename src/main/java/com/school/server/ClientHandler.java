@@ -17,60 +17,61 @@ import java.util.logging.Logger;
  *
  * @author Mikkel
  */
-public class ClientHandler implements Runnable{
+public class ClientHandler implements Runnable {
+
     private final Socket socket;
     private final Server server;
     private String username;
     private final BufferedReader input;
     private final PrintWriter output;
 
-    public ClientHandler(Socket socket, Server server) throws IOException{
+    public ClientHandler(Socket socket, Server server) throws IOException {
         this.socket = socket;
         this.server = server;
         this.username = "";
         this.input = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         this.output = new PrintWriter(socket.getOutputStream());
     }
-    
+
     public static ClientHandler setServer(Socket socket, Server server) throws IOException {
         return new ClientHandler(socket, server);
     }
-    
+
     public String getUsername() {
         return username;
     }
-    
+
     private void checkHeader(String[] data) throws InterruptedException {
-        switch(data[0]) {
+        switch (data[0]) {
             case "LOGIN":
-                if (username.equals("")){
-                this.username = data[1];
-                server.updateClientList();
-                break;
-                } 
+                if (username.equals("")) {
+                    this.username = data[1];
+                    server.updateClientList();
+                    break;
+                }
                 //Fejlbesked
                 break;
-                
+
             case "MSG":
-                if (!username.equals("")){
-                server.handelMessage(data, this.username);
-                break;
-                } 
+                if (!username.equals("")) {
+                    server.handelMessage(data, this.username);
+                    break;
+                }
                 //Fejlbesked
                 break;
-                
+
             case "LOGOUT":
-                if (!username.equals("")){
-                server.removeObserver(this);
-                break;
-                } 
+                if (!username.equals("")) {
+                    server.removeObserver(this);
+                    break;
+                }
                 //Fejlbesked
                 break;
         }
     }
-    
+
     public void sendMessage(String command, String message, String username) {
-        switch(command){
+        switch (command) {
             case "MSGRES":
                 output.println(command + ":" + username + ":" + message);
                 output.flush();
@@ -80,24 +81,25 @@ public class ClientHandler implements Runnable{
                 output.flush();
                 break;
         }
-        
+
     }
 
     @Override
     public void run() {
-        while(true) {
+        while (true) {
             try {
                 String message = input.readLine();
                 String[] headers = message.split(":");
                 checkHeader(headers);
             } catch (IOException ex) {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
             } catch (InterruptedException ex) {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
             }
-            
+
         }
     }
-    
-    
+
 }

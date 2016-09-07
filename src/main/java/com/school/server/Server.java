@@ -57,6 +57,7 @@ public class Server {
             }
 
         }
+        Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
     }
 
     public void start(String ip, int port) {
@@ -72,21 +73,23 @@ public class Server {
 
             }
         } catch (Exception ex) {
-            System.out.println(ex);
+            Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
         }
     }
 
     public void updateClientList() {
+        String clientList = "";
         for (ClientHandler observer : observers) {
             String command = "CLIENTLIST";
-            String clientList = "";
             for (ClientHandler o : observers) {
                 clientList = clientList + o.getUsername() + ",";
 
             }
             clientList = clientList.substring(0, (clientList.length() - 1));
             observer.sendMessage(command, "", clientList);
+
         }
+        Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Clientlist updated: " + clientList);
     }
 
 }
