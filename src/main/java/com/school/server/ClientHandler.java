@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
         return username;
     }
 
-    private void checkHeader(String[] data) throws InterruptedException {
+    private void checkHeader(String[] data) throws InterruptedException, IOException {
         switch (data[0]) {
             case "LOGIN":
                 if (username.equals("")) {
@@ -62,6 +62,7 @@ public class ClientHandler implements Runnable {
 
             case "LOGOUT":
                 if (!username.equals("")) {
+                    socket.close();
                     server.removeObserver(this);
                     break;
                 }
