@@ -28,12 +28,12 @@ public class Server {
         } finally {
             Log.closeLogger();
         }
-
     }
 
     /**
      * Adds a Observer object to the List.
-     * @param handler 
+     *
+     * @param handler
      */
     public void addObserver(ClientHandler handler) {
         observers.add(handler);
@@ -41,7 +41,8 @@ public class Server {
 
     /**
      * Removes a Observer object from the List.
-     * @param handler 
+     *
+     * @param handler
      */
     public void removeObserver(ClientHandler handler) {
         observers.remove(handler);
@@ -49,11 +50,12 @@ public class Server {
     }
 
     /**
-     * Receives a incoming message from a client, and sends the message to
-     * the appropriate recipient. 
+     * Receives a incoming message from a client, and sends the message to the
+     * appropriate recipient.
+     *
      * @param data
      * @param username
-     * @throws InterruptedException 
+     * @throws InterruptedException
      */
     public void handelMessage(String[] data, String username) throws InterruptedException {
         String[] users = data[1].split(","); //data is split on "," to get the recipients of the message.
@@ -71,20 +73,19 @@ public class Server {
             } else {
                 client.sendMessage(command, data[2], username);
             }
-
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
     }
 
-    
-    public static void stopServer(){
+    public static void stopServer() {
         keepAlive.set(false);
     }
-    
+
     /**
      * Starts the server with ip and portnumber specified in the parameters.
+     *
      * @param ip
-     * @param port 
+     * @param port
      */
     public void start(String ip, int port) {
         try {
@@ -107,16 +108,15 @@ public class Server {
      */
     public void updateClientList() {
         String clientList = "";
+        //Variable contains CLIENTLIST so we match the correct switch case in sendMessage().
+        String command = "CLIENTLIST"; 
         for (ClientHandler observer : observers) {
-            clientList = "";
-            String command = "CLIENTLIST"; //Variable contains CLIENTLIST so we match the correct switch case in sendMessage().
-            for (ClientHandler o : observers) {
-                clientList = clientList.concat(o.getUsername() + (",")); //A "," is added to follow the message protocol.
-
-            }
-            clientList = clientList.substring(0, (clientList.length() - 1));
-            observer.sendMessage(command, clientList); 
-
+            //A "," is added to follow the message protocol.
+            clientList = clientList.concat(observer.getUsername() + (",")); 
+        }
+        clientList = clientList.substring(0, (clientList.length() - 1));
+        for (ClientHandler o : observers) {
+            o.sendMessage(command, clientList);
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Clientlist updated: " + clientList);
     }

@@ -65,7 +65,8 @@ public class ClientHandler implements Runnable {
      * @throws InterruptedException
      * @throws IOException
      */
-    private void checkHeader(String[] data) throws InterruptedException, IOException {
+
+    synchronized private void checkHeader(String[] data) throws InterruptedException, IOException {
         switch (data[0]) {
             case "LOGIN":
                 if (username.isEmpty()) {
@@ -73,6 +74,8 @@ public class ClientHandler implements Runnable {
                     server.updateClientList();
                     break;
                 }
+                
+                //TODO: Fejlbesked - Logger?
                 break;
 
             case "MSG":
@@ -80,6 +83,8 @@ public class ClientHandler implements Runnable {
                     server.handelMessage(data, this.username);
                     break;
                 }
+                
+                //TODO: Fejlbesked - Logger?
                 break;
 
             case "LOGOUT":
@@ -88,6 +93,8 @@ public class ClientHandler implements Runnable {
                     server.removeObserver(this);
                     break;
                 }
+
+                //TODO: Fejlbesked - Logger?
                 break;
         }
     }
@@ -134,5 +141,4 @@ public class ClientHandler implements Runnable {
             }
         }
     }
-
 }
