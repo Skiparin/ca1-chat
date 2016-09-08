@@ -7,6 +7,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +18,7 @@ public class Server {
 
     private static final List<ClientHandler> observers = new CopyOnWriteArrayList<>();
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
+    private static AtomicBoolean keepAlive = new AtomicBoolean(true);
 
     public static void main(String[] args) {
         try {
@@ -60,17 +62,21 @@ public class Server {
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
     }
 
+    
+    public static void stopServer(){
+        keepAlive.set(false);
+    }
+    
     public void start(String ip, int port) {
         try {
             ServerSocket server = new ServerSocket();
             server.bind(new InetSocketAddress(ip, port));
 
-            while (true) {
+            while (keepAlive.get()) {
                 Socket socket = server.accept();
                 ClientHandler handler = ClientHandler.setServer(socket, this);
                 observers.add(handler);
                 threadPool.submit(handler);
-
             }
         } catch (Exception ex) {
             Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
