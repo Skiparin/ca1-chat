@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -79,14 +78,8 @@ public class ServerTest {
     
     @Test
     public void connect() throws IOException{
-        outClient1.write("LOGIN:Kasper");
         new Thread( () -> {
-            try {
-                String temp = inClient1.readLine();
-                Assert.assertEquals(temp, "Test");
-            } catch (IOException ex) {
-                Logger.getLogger(ServerTest.class.getName()).log(Level.SEVERE, null, ex);
-            }
+                Assert.assertEquals(socket1.isBound(), true);
                 }).start();
         outClient1.write("MSG::Test");
     }
