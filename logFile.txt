@@ -1,0 +1,6 @@
+Sep 08, 2016 10:44:24 AM com.school.server.Server main
+INFO: Starting the Server
+Sep 08, 2016 10:44:45 AM com.school.server.Server updateClientList
+INFO: Clientlist updated: mikkel
+Sep 08, 2016 10:45:06 AM com.school.server.Server updateClientList
+INFO: Clientlist updated: mikkel,kasper
