@@ -23,7 +23,6 @@ public class Server {
     public static void main(String[] args) {
         try {
             Log.setLogFile("logFile.txt", "ServerLog");
-            //Start the server here
             Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Starting the Server");
             new Server().start(args[0], Integer.parseInt(args[1]));
         } finally {
@@ -32,20 +31,35 @@ public class Server {
 
     }
 
+    /**
+     * Adds a Observer object to the List.
+     * @param handler 
+     */
     public void addObserver(ClientHandler handler) {
         observers.add(handler);
     }
 
+    /**
+     * Removes a Observer object from the List.
+     * @param handler 
+     */
     public void removeObserver(ClientHandler handler) {
         observers.remove(handler);
         updateClientList();
     }
 
+    /**
+     * Receives a incoming message from a client, and sends the message to
+     * the appropriate recipient. 
+     * @param data
+     * @param username
+     * @throws InterruptedException 
+     */
     public void handelMessage(String[] data, String username) throws InterruptedException {
-        String[] users = data[1].split(",");
-        String command = "MSGRES";
+        String[] users = data[1].split(","); //data is split on "," to get the recipients of the message.
+        String command = "MSGRES"; //Variable contains MSGRES so we match the correct switch case in sendMessage().
         for (ClientHandler client : observers) {
-            if (!data[1].isEmpty()) {
+            if (!data[1].isEmpty()) { //If the string of recipients is empty, the message will be sent to all.
                 if (client.getUsername().equals(username)) {
                     client.sendMessage(command, data[2], username);
                 }
@@ -67,6 +81,11 @@ public class Server {
         keepAlive.set(false);
     }
     
+    /**
+     * Starts the server with ip and portnumber specified in the parameters.
+     * @param ip
+     * @param port 
+     */
     public void start(String ip, int port) {
         try {
             ServerSocket server = new ServerSocket();
@@ -83,16 +102,20 @@ public class Server {
         }
     }
 
+    /**
+     * Makes a list of the current clients connected to the server.
+     */
     public void updateClientList() {
         String clientList = "";
         for (ClientHandler observer : observers) {
-            String command = "CLIENTLIST";
+            clientList = "";
+            String command = "CLIENTLIST"; //Variable contains CLIENTLIST so we match the correct switch case in sendMessage().
             for (ClientHandler o : observers) {
-                clientList = clientList + o.getUsername() + ",";
+                clientList = clientList.concat(o.getUsername() + (",")); //A "," is added to follow the message protocol.
 
             }
             clientList = clientList.substring(0, (clientList.length() - 1));
-            observer.sendMessage(command, "", clientList);
+            observer.sendMessage(command, clientList); 
 
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Clientlist updated: " + clientList);
