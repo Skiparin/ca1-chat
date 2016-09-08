@@ -74,8 +74,6 @@ public class ClientHandler implements Runnable {
                     server.updateClientList();
                     break;
                 }
-                
-                //TODO: Fejlbesked - Logger?
                 break;
 
             case "MSG":
@@ -83,8 +81,6 @@ public class ClientHandler implements Runnable {
                     server.handelMessage(data, this.username);
                     break;
                 }
-                
-                //TODO: Fejlbesked - Logger?
                 break;
 
             case "LOGOUT":
@@ -93,8 +89,6 @@ public class ClientHandler implements Runnable {
                     server.removeObserver(this);
                     break;
                 }
-
-                //TODO: Fejlbesked - Logger?
                 break;
         }
     }
