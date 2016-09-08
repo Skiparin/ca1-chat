@@ -62,16 +62,16 @@ public class Server {
         String command = "MSGRES"; //Variable contains MSGRES so we match the correct switch case in sendMessage().
         for (ClientHandler client : observers) {
             if (!data[1].isEmpty()) { //If the string of recipients is empty, the message will be sent to all.
-                if (client.getUsername().equals(username)) {
-                    client.sendMessage(command, data[2], username);
-                }
+                
                 for (String user : users) {
                     if (client.getUsername().equals(user)) {
                         client.sendMessage(command, data[2], username);
                     }
                 }
             } else {
+                if (!client.getUsername().equals(username)) {
                 client.sendMessage(command, data[2], username);
+                }
             }
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
