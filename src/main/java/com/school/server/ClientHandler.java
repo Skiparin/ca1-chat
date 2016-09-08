@@ -41,7 +41,7 @@ public class ClientHandler implements Runnable {
         return username;
     }
 
-    private void checkHeader(String[] data) throws InterruptedException, IOException {
+    synchronized private void checkHeader(String[] data) throws InterruptedException, IOException {
         switch (data[0]) {
             case "LOGIN":
                 if (username.equals("")) {
@@ -49,7 +49,7 @@ public class ClientHandler implements Runnable {
                     server.updateClientList();
                     break;
                 }
-                //Fejlbesked
+                //TODO: Fejlbesked - Logger?
                 break;
 
             case "MSG":
@@ -57,7 +57,7 @@ public class ClientHandler implements Runnable {
                     server.handelMessage(data, this.username);
                     break;
                 }
-                //Fejlbesked
+                //TODO: Fejlbesked - Logger?
                 break;
 
             case "LOGOUT":
@@ -66,7 +66,7 @@ public class ClientHandler implements Runnable {
                     server.removeObserver(this);
                     break;
                 }
-                //Fejlbesked
+                //TODO: Fejlbesked - Logger?
                 break;
         }
     }
@@ -82,7 +82,6 @@ public class ClientHandler implements Runnable {
                 output.flush();
                 break;
         }
-
     }
 
     @Override
@@ -99,8 +98,6 @@ public class ClientHandler implements Runnable {
                 Logger.getLogger(ClientHandler.class.getName()).log(Level.SEVERE, null, ex);
                 Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
             }
-
         }
     }
-
 }

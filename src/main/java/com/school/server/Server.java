@@ -27,7 +27,6 @@ public class Server {
         } finally {
             Log.closeLogger();
         }
-
     }
 
     public void addObserver(ClientHandler handler) {
@@ -55,7 +54,6 @@ public class Server {
             } else {
                 client.sendMessage(command, data[2], username);
             }
-
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
     }
@@ -64,13 +62,11 @@ public class Server {
         try {
             ServerSocket server = new ServerSocket();
             server.bind(new InetSocketAddress(ip, port));
-
             while (true) {
                 Socket socket = server.accept();
                 ClientHandler handler = ClientHandler.setServer(socket, this);
                 observers.add(handler);
                 threadPool.submit(handler);
-
             }
         } catch (Exception ex) {
             Logger.getLogger(Log.LOG_NAME).log(Level.INFO, ex.getMessage());
@@ -79,15 +75,15 @@ public class Server {
 
     public void updateClientList() {
         String clientList = "";
+
+        //TODO: Why do we have two for loops here?
         for (ClientHandler observer : observers) {
             String command = "CLIENTLIST";
             for (ClientHandler o : observers) {
                 clientList = clientList + o.getUsername() + ",";
-
             }
             clientList = clientList.substring(0, (clientList.length() - 1));
             observer.sendMessage(command, "", clientList);
-
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Clientlist updated: " + clientList);
     }
