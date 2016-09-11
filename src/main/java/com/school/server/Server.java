@@ -16,7 +16,7 @@ import java.util.logging.Logger;
  */
 public class Server {
 
-    private static final List<ClientHandler> observers = new CopyOnWriteArrayList<>();
+    private static final List<ClientHandler> clients = new CopyOnWriteArrayList<>();
     private static final ExecutorService threadPool = Executors.newCachedThreadPool();
     private static AtomicBoolean keepAlive = new AtomicBoolean(true);
 
@@ -36,7 +36,7 @@ public class Server {
      * @param handler
      */
     public void addObserver(ClientHandler handler) {
-        observers.add(handler);
+        clients.add(handler);
     }
 
     /**
@@ -45,7 +45,7 @@ public class Server {
      * @param handler
      */
     public void removeObserver(ClientHandler handler) {
-        observers.remove(handler);
+        clients.remove(handler);
         updateClientList();
     }
 
@@ -60,7 +60,7 @@ public class Server {
     public void handelMessage(String[] data, String username) throws InterruptedException {
         String[] users = data[1].split(","); //data is split on "," to get the recipients of the message.
         String command = "MSGRES"; //Variable contains MSGRES so we match the correct switch case in sendMessage().
-        for (ClientHandler client : observers) {
+        for (ClientHandler client : clients) {
             if (!data[1].isEmpty()) { //If the string of recipients is empty, the message will be sent to all.
                 
                 for (String user : users) {
@@ -74,7 +74,7 @@ public class Server {
                 }
             }
         }
-        Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + data[1] + data[2]);
+        Logger.getLogger(Log.LOG_NAME).log(Level.INFO, data[0] + ":" + data[1] + ":" + data[2]);
     }
 
     public static void stopServer() {
@@ -95,7 +95,7 @@ public class Server {
             while (keepAlive.get()) {
                 Socket socket = server.accept();
                 ClientHandler handler = ClientHandler.setServer(socket, this);
-                observers.add(handler);
+                clients.add(handler);
                 threadPool.submit(handler);
             }
         } catch (Exception ex) {
@@ -110,12 +110,12 @@ public class Server {
         String clientList = "";
         //Variable contains CLIENTLIST so we match the correct switch case in sendMessage().
         String command = "CLIENTLIST"; 
-        for (ClientHandler observer : observers) {
+        for (ClientHandler observer : clients) {
             //A "," is added to follow the message protocol.
             clientList = clientList.concat(observer.getUsername() + (",")); 
         }
         clientList = clientList.substring(0, (clientList.length() - 1));
-        for (ClientHandler o : observers) {
+        for (ClientHandler o : clients) {
             o.sendMessage(command, clientList);
         }
         Logger.getLogger(Log.LOG_NAME).log(Level.INFO, "Clientlist updated: " + clientList);

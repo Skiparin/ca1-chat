@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -24,6 +25,7 @@ public class ClientHandler implements Runnable {
     private String username;
     private final BufferedReader input;
     private final PrintWriter output;
+    private final AtomicBoolean running = new AtomicBoolean(true); 
 
     /**
      * Makes a new object of the type ClientHandler.
@@ -57,6 +59,10 @@ public class ClientHandler implements Runnable {
         return username;
     }
 
+    
+    private void stopRunning(){
+        running.set(false);
+    }
     /**
      * Checks which command is sent from the client and calls the appropriate
      * method.
@@ -85,8 +91,9 @@ public class ClientHandler implements Runnable {
 
             case "LOGOUT":
                 if (!username.isEmpty()) {
-                    socket.close();
+                    stopRunning();
                     server.removeObserver(this);
+                    socket.close();
                     break;
                 }
                 break;
@@ -121,7 +128,7 @@ public class ClientHandler implements Runnable {
      */
     @Override
     public void run() {
-        while (true) {
+        while (running.get()) {
             try {
                 String message = input.readLine();
                 String[] headers = message.split(":");
